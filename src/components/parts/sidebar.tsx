@@ -26,7 +26,7 @@ const data = {
       url: "/leaderboard",
     },
     {
-      title: "🧩 Estensione",
+      title: "🧩 Installa Ora",
       url: "/extension",
     },
   ],
