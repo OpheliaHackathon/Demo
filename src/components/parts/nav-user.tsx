@@ -13,18 +13,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
+import { axiosClient } from "@/lib/axios";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 import { LogOutIcon, MoreVerticalIcon, UserCircleIcon } from "lucide-react";
 
 export function NavUser({
   user,
 }: {
-  user: {
-    name: string;
+  user?: {
+    username: string;
     email: string;
   };
 }) {
+  const navigate = useNavigate();
   const { isMobile } = useSidebar();
 
   return (
@@ -34,9 +36,9 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="p-6 border">
               <div className="flex flex-col">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{user?.username}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
+                  {user?.email}
                 </span>
               </div>
               <MoreVerticalIcon className="ml-auto" size={16} />
@@ -50,9 +52,9 @@ export function NavUser({
           >
             <DropdownMenuLabel>
               <div className="flex flex-col">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{user?.username}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
+                  {user?.email}
                 </span>
               </div>
             </DropdownMenuLabel>
@@ -66,7 +68,16 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                axiosClient.post("/04_logout.php").then(() => {
+                  localStorage.removeItem("token");
+                  navigate({
+                    to: "/login",
+                  });
+                });
+              }}
+            >
               <LogOutIcon />
               Esci
             </DropdownMenuItem>

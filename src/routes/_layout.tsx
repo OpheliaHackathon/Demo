@@ -10,6 +10,15 @@ export const Route = createFileRoute("/_layout")({
 });
 
 function DashboardLayout() {
+  const navigate = Route.useNavigate();
+
+  if (localStorage.getItem("token") === null) {
+    navigate({
+      to: "/login",
+    });
+    return null;
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -20,7 +29,7 @@ function DashboardLayout() {
       >
         <SidebarTrigger />
       </Button>
-      
+
       <div className="flex flex-col w-full h-screen">
         <Outlet />
         <Footer />

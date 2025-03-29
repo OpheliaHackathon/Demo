@@ -7,14 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
@@ -25,39 +18,56 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/lib/axios";
+import { useState } from "react";
 
-const chartData = [
-  { day: "Lunedì", me: 100, global: 200 },
-  { day: "Martedì", me: 120, global: 250 },
-  { day: "Mercoledì", me: 150, global: 300 },
-  { day: "Giovedì", me: 200, global: 350 },
-  { day: "Venerdì", me: 250, global: 400 },
-  { day: "Sabato", me: 300, global: 450 },
-  { day: "Domenica", me: 350, global: 500 },
+const days = [
+  "Lunedì",
+  "Martedì",
+  "Mercoledì",
+  "Giovedì",
+  "Venerdì",
+  "Sabato",
+  "Domenica",
 ];
+
 const chartConfig = {
   me: {
     label: "Me",
     color: "hsl(var(--chart-1))",
   },
-  global: {
-    label: "Globale",
-    color: "hsl(var(--chart-2))",
-  },
 } satisfies ChartConfig;
+
+export type DashboardData = {
+  daily: number;
+  week: number[];
+};
 
 export const Route = createLazyFileRoute("/_layout/dashboard")({
   component: Dashboard,
 });
 
 function Dashboard() {
+  const [mode, setMode] = useState(1);
+  const dashboardQuery = useQuery({
+    queryKey: ["dashboard", mode],
+    queryFn: async () =>
+      axiosClient
+        .get<DashboardData>(`/02_dashboard.php?mode=${mode}`)
+        .then((res) => res.data),
+  });
+
   return (
     <div className="p-3 w-full flex flex-col gap-3">
       <div className="flex flex-col lg:flex-row gap-3">
         <Card className="w-full lg:w-1/2">
           <CardHeader>
             <CardTitle className="text-3xl">
-              <span className="text-primary">20.000 KM</span> in macchina 🚗
+              <span className="text-primary">
+                {Math.round((dashboardQuery.data?.daily ?? 0) / 120)} KM
+              </span>{" "}
+              in macchina 🚗
             </CardTitle>
             <CardDescription>
               Il consumo tangibile dell'ultimo giorno.
@@ -68,7 +78,10 @@ function Dashboard() {
         <Card className="w-full lg:w-1/2">
           <CardHeader>
             <CardTitle className="text-3xl">
-              <span className="text-primary">100 emissioni</span> di CO2 🌍
+              <span className="text-primary">
+                {dashboardQuery.data?.daily ?? 0} g
+              </span>{" "}
+              di CO2 🌍
             </CardTitle>
             <CardDescription>
               Il consumo reale dell'ultimo giorno.
@@ -79,13 +92,16 @@ function Dashboard() {
 
       <Separator className="my-2" />
 
-      <Select>
+      <Select
+        value={mode.toString()}
+        onValueChange={(value) => setMode(parseInt(value))}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Ultimo giorno" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="current">Settimana corrente</SelectItem>
-          <SelectItem value="last">Settimana precendente</SelectItem>
+          <SelectItem value="1">Settimana corrente</SelectItem>
+          <SelectItem value="2">Settimana precendente</SelectItem>
         </SelectContent>
       </Select>
 
@@ -100,7 +116,22 @@ function Dashboard() {
               config={chartConfig}
               className="max-h-[600px] w-full"
             >
-              <BarChart accessibilityLayer data={chartData}>
+              <BarChart
+                accessibilityLayer
+                data={
+                  dashboardQuery.data?.week
+                    ? [...Array(7)].map((_, index) => ({
+                        day: days[index],
+                        me: dashboardQuery.data.week[index] || 0,
+                      }))
+                    : Array(7)
+                        .fill(0)
+                        .map((_, index) => ({
+                          day: days[index],
+                          me: 0,
+                        }))
+                }
+              >
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="day"
@@ -116,10 +147,7 @@ function Dashboard() {
                   axisLine={false}
                   tickFormatter={(value) => value}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
                 <Bar dataKey="me" fill="var(--color-me)" radius={4} />
-                <Bar dataKey="global" fill="var(--color-global)" radius={4} />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -128,9 +156,7 @@ function Dashboard() {
         <Card className="w-full lg:w-1/2">
           <CardHeader>
             <CardTitle className="text-3xl">Consiglio 💡</CardTitle>
-            <CardDescription>
-              Ophelia ti consiglia...
-            </CardDescription>
+            <CardDescription>Ophelia ti consiglia...</CardDescription>
           </CardHeader>
           <CardContent>
             <img
