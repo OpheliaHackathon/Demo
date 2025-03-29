@@ -62,10 +62,7 @@ function Login() {
       return;
     }
 
-    form.setError("username", {
-      type: "validate",
-      message: "Username o password errati",
-    });
+    alert(res.message);
   }
 
   return (

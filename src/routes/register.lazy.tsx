@@ -80,10 +80,7 @@ function Register() {
         return;
       }
 
-      form.setError("username", {
-        type: "validate",
-        message: res.message,
-      });
+      alert(res.message);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response.status === 422) {

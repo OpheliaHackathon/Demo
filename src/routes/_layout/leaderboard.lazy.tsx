@@ -1,4 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 
 import {
   Card,
@@ -7,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+
 import { axiosClient } from "@/lib/axios";
 
 export type LeaderboardData = {

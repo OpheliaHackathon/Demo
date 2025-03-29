@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 import {
@@ -9,6 +10,16 @@ import {
 } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -17,10 +28,9 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/lib/axios";
 import { useState } from "react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const days = [
   "Lunedì",
@@ -60,6 +70,30 @@ function Dashboard() {
 
   return (
     <div className="p-3 w-full flex flex-col gap-3">
+      <Dialog>
+        <DialogTrigger>Open</DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Visualizza il tuo token</DialogTitle>
+            <DialogDescription>
+              Inserisci il tuo token nella estensione per il browser.
+              <Separator className="my-2" />
+              <Label htmlFor="token">Token:</Label>
+              <Input
+                placeholder={localStorage.getItem("token") ?? ""}
+                className="mt-2 cursor-pointer active:scale-98 transition-all duration-200"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    localStorage.getItem("token") ?? ""
+                  );
+                }}
+                readOnly
+              />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
       <div className="flex flex-col lg:flex-row gap-3">
         <Card className="w-full lg:w-1/2">
           <CardHeader>
