@@ -25,6 +25,10 @@ const data = {
       title: "📊 Classifica",
       url: "/leaderboard",
     },
+    {
+      title: "🧩 Estensione",
+      url: "/extension",
+    },
   ],
 };
 

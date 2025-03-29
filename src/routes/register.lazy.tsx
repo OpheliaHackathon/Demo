@@ -72,7 +72,7 @@ function Register() {
 
         if (res2.token) {
           localStorage.setItem("token", res2.token);
-          location.href = "/dashboard";
+          location.href = "/extension";
           return;
         }
 

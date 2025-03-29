@@ -21,6 +21,7 @@ const RegisterLazyImport = createFileRoute('/register')()
 const LoginLazyImport = createFileRoute('/login')()
 const IndexLazyImport = createFileRoute('/')()
 const LayoutLeaderboardLazyImport = createFileRoute('/_layout/leaderboard')()
+const LayoutExtensionLazyImport = createFileRoute('/_layout/extension')()
 const LayoutDashboardLazyImport = createFileRoute('/_layout/dashboard')()
 const LayoutAccountLazyImport = createFileRoute('/_layout/account')()
 
@@ -55,6 +56,14 @@ const LayoutLeaderboardLazyRoute = LayoutLeaderboardLazyImport.update({
   getParentRoute: () => LayoutRoute,
 } as any).lazy(() =>
   import('./routes/_layout/leaderboard.lazy').then((d) => d.Route),
+)
+
+const LayoutExtensionLazyRoute = LayoutExtensionLazyImport.update({
+  id: '/extension',
+  path: '/extension',
+  getParentRoute: () => LayoutRoute,
+} as any).lazy(() =>
+  import('./routes/_layout/extension.lazy').then((d) => d.Route),
 )
 
 const LayoutDashboardLazyRoute = LayoutDashboardLazyImport.update({
@@ -119,6 +128,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutDashboardLazyImport
       parentRoute: typeof LayoutImport
     }
+    '/_layout/extension': {
+      id: '/_layout/extension'
+      path: '/extension'
+      fullPath: '/extension'
+      preLoaderRoute: typeof LayoutExtensionLazyImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/leaderboard': {
       id: '/_layout/leaderboard'
       path: '/leaderboard'
@@ -134,12 +150,14 @@ declare module '@tanstack/react-router' {
 interface LayoutRouteChildren {
   LayoutAccountLazyRoute: typeof LayoutAccountLazyRoute
   LayoutDashboardLazyRoute: typeof LayoutDashboardLazyRoute
+  LayoutExtensionLazyRoute: typeof LayoutExtensionLazyRoute
   LayoutLeaderboardLazyRoute: typeof LayoutLeaderboardLazyRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAccountLazyRoute: LayoutAccountLazyRoute,
   LayoutDashboardLazyRoute: LayoutDashboardLazyRoute,
+  LayoutExtensionLazyRoute: LayoutExtensionLazyRoute,
   LayoutLeaderboardLazyRoute: LayoutLeaderboardLazyRoute,
 }
 
@@ -153,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterLazyRoute
   '/account': typeof LayoutAccountLazyRoute
   '/dashboard': typeof LayoutDashboardLazyRoute
+  '/extension': typeof LayoutExtensionLazyRoute
   '/leaderboard': typeof LayoutLeaderboardLazyRoute
 }
 
@@ -163,6 +182,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterLazyRoute
   '/account': typeof LayoutAccountLazyRoute
   '/dashboard': typeof LayoutDashboardLazyRoute
+  '/extension': typeof LayoutExtensionLazyRoute
   '/leaderboard': typeof LayoutLeaderboardLazyRoute
 }
 
@@ -174,6 +194,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterLazyRoute
   '/_layout/account': typeof LayoutAccountLazyRoute
   '/_layout/dashboard': typeof LayoutDashboardLazyRoute
+  '/_layout/extension': typeof LayoutExtensionLazyRoute
   '/_layout/leaderboard': typeof LayoutLeaderboardLazyRoute
 }
 
@@ -186,6 +207,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/account'
     | '/dashboard'
+    | '/extension'
     | '/leaderboard'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -195,6 +217,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/account'
     | '/dashboard'
+    | '/extension'
     | '/leaderboard'
   id:
     | '__root__'
@@ -204,6 +227,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/_layout/account'
     | '/_layout/dashboard'
+    | '/_layout/extension'
     | '/_layout/leaderboard'
   fileRoutesById: FileRoutesById
 }
@@ -246,6 +270,7 @@ export const routeTree = rootRoute
       "children": [
         "/_layout/account",
         "/_layout/dashboard",
+        "/_layout/extension",
         "/_layout/leaderboard"
       ]
     },
@@ -261,6 +286,10 @@ export const routeTree = rootRoute
     },
     "/_layout/dashboard": {
       "filePath": "_layout/dashboard.lazy.tsx",
+      "parent": "/_layout"
+    },
+    "/_layout/extension": {
+      "filePath": "_layout/extension.lazy.tsx",
       "parent": "/_layout"
     },
     "/_layout/leaderboard": {

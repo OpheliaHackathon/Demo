@@ -35,7 +35,7 @@ function Leaderboard() {
     <div className="p-3 flex flex-col lg:flex-row w-full gap-3 h-fit">
       <Card className="w-full lg:w-1/2">
         <CardHeader>
-          <CardTitle className="text-3xl">Classifica 📈</CardTitle>
+          <CardTitle className="text-3xl">Classifica 📊</CardTitle>
           <CardDescription>Ecco la classifica dei migliori!</CardDescription>
         </CardHeader>
         <CardContent>
