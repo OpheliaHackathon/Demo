@@ -31,6 +31,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { axiosClient } from "@/lib/axios";
 
+import Suggestion from "@/components/suggestion";
+
 const days = [
   "Lunedì",
   "Martedì",
@@ -196,20 +198,7 @@ function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="w-full lg:w-1/2">
-          <CardHeader>
-            <CardTitle className="text-3xl">Consiglio 💡</CardTitle>
-            <CardDescription>Ophelia ti consiglia...</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <img
-              src="felice.png"
-              alt="Ophelia"
-              className="w-1/2 mx-auto"
-              draggable={false}
-            />
-          </CardContent>
-        </Card>
+        <Suggestion />
       </div>
     </div>
   );
