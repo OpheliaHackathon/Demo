@@ -1,0 +1,77 @@
+import { createLazyFileRoute } from "@tanstack/react-router";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+export const Route = createLazyFileRoute("/_layout/leaderboard")({
+  component: Leaderboard,
+});
+
+const leaderboardData = [
+  { name: "Mario Rossi", score: 100 },
+  { name: "Luigi Bianchi", score: 90 },
+  { name: "Giovanni Verdi", score: 80 },
+  { name: "Anna Neri", score: 70 },
+  { name: "Maria Rossi", score: 60 },
+  { name: "Marco Bianchi", score: 50 },
+  { name: "Francesca Verdi", score: 40 },
+  { name: "Giuseppe Neri", score: 30 },
+  { name: "Laura Rossi", score: 20 },
+  { name: "Antonio Bianchi", score: 10 },
+];
+
+function Leaderboard() {
+  return (
+    <div className="p-3 flex flex-col lg:flex-row w-full gap-3 h-fit">
+      <Card className="w-full lg:w-1/2">
+        <CardHeader>
+          <CardTitle className="text-3xl">Classifica 📈</CardTitle>
+          <CardDescription>Ecco la classifica dei migliori!</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="flex flex-col gap-2">
+            {leaderboardData
+              .sort((a, b) => a.score - b.score)
+              .map((player, index) => {
+                const medal = ["🏆", "🥈", "🥉"][index] || `${index + 1}.`;
+
+                return (
+                  <li
+                    key={player.name}
+                    className="p-4 border rounded-3xl flex items-center gap-2 w-full hover:bg-sidebar-accent transition-colors duration-200"
+                  >
+                    <span className="text-lg font-bold">{medal}</span>
+
+                    <div className="flex justify-between items-center w-full">
+                      <span>{player.name}:</span>
+                      <span className="">{player.score} 💨</span>
+                    </div>
+                  </li>
+                );
+              })}
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full lg:w-1/2">
+        <CardHeader>
+          <CardTitle className="text-3xl">Consiglio 💡</CardTitle>
+          <CardDescription>Ophelia ti consiglia...</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center h-full">
+          <img
+            src="felice.png"
+            alt="Ophelia"
+            className="w-1/2 mx-auto"
+            draggable={false}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
