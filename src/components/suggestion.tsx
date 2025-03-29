@@ -31,7 +31,13 @@ export default function Suggestion() {
         </Card>
 
         <img
-          src="felice.png"
+          src={
+            suggestionQuery.data?.co2_totale <= 500
+              ? "felice.png"
+              : suggestionQuery.data?.co2_totale <= 1000
+              ? "neutro.png"
+              : "arrabbiato.png"
+          }
           alt="Ophelia"
           className="w-1/2 mx-auto"
           draggable={false}
