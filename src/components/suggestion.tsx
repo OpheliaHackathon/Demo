@@ -5,8 +5,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { axiosClient } from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Suggestion() {
+  const suggestionQuery = useQuery({
+    queryKey: ["suggestion"],
+    queryFn: async () =>
+      axiosClient.get("/07_consigli.php").then((res) => res.data),
+  });
+
   return (
     <Card className="w-full lg:w-1/2">
       <CardHeader>
@@ -16,7 +24,9 @@ export default function Suggestion() {
       <CardContent className="flex flex-col items-center justify-center h-full relative">
         <Card className="absolute w-2/3 bottom-4 hover:bg-sidebar-accent transition-colors duration-200">
           <CardHeader>
-            <CardTitle className="text-center">TEST</CardTitle>
+            <CardTitle className="text-center">
+              {suggestionQuery.data?.consiglio}
+            </CardTitle>
           </CardHeader>
         </Card>
 
