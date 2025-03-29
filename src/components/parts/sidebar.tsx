@@ -12,12 +12,10 @@ import {
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/lib/axios";
 
 const data = {
-  user: {
-    name: "michele",
-    email: "michele@example.com",
-  },
   navMain: [
     {
       title: "🏠 Dashboard",
@@ -31,6 +29,12 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userQuery = useQuery({
+    queryKey: ["user"],
+    queryFn: async () =>
+      axiosClient.get("/06_info.php").then((res) => res.data),
+  });
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -40,13 +44,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="font-semibold text-3xl p-6 border"
             >
-              <Link to="/dashboard" className="flex items-center">
-                <img
-                  src="logo.png"
-                  alt="Logo"
-                  height={30}
-                  width={30}
-                />
+              <Link to="/" className="flex items-center">
+                <img src="logo.png" alt="Logo" height={30} width={30} />
                 CarbonQuest
               </Link>
             </SidebarMenuButton>
@@ -57,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userQuery.data} />
       </SidebarFooter>
     </Sidebar>
   );

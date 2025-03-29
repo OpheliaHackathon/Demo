@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { registerSchema } from "@/lib/schemas";
+import { axiosClient } from "@/lib/axios";
 
 export const Route = createLazyFileRoute("/register")({
   component: Register,
@@ -40,10 +41,63 @@ function Register() {
     },
   });
 
-  function onSubmit() {
+  if (localStorage.getItem("token") !== null) {
     navigate({
       to: "/dashboard",
     });
+    return null;
+  }
+
+  async function onSubmit(data: z.infer<typeof registerSchema>) {
+    if (data.password !== data.confirmPassword) {
+      form.setError("confirmPassword", {
+        type: "validate",
+        message: "Le password non corrispondono",
+      });
+      return;
+    }
+
+    try {
+      const { data: res } = await axiosClient.post(
+        "/00_registrazione.php",
+        data
+      );
+
+      if (res.success) {
+        const { data: res2 } = await axiosClient.post(
+          "/01_autentificazione.php",
+          data
+        );
+
+        if (res2.token) {
+          localStorage.setItem("token", res2.token);
+          navigate({
+            to: "/dashboard",
+          });
+          return;
+        }
+
+        return;
+      }
+
+      form.setError("username", {
+        type: "validate",
+        message: res.message,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response.status === 422) {
+        form.setError("username", {
+          type: "validate",
+          message: error.response.data.message,
+        });
+      } else {
+        form.setError("username", {
+          type: "validate",
+          message: "Errore durante la registrazione",
+        });
+      }
+    }
   }
 
   return (

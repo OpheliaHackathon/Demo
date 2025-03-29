@@ -19,6 +19,7 @@ import { Route as LayoutImport } from './routes/_layout'
 
 const RegisterLazyImport = createFileRoute('/register')()
 const LoginLazyImport = createFileRoute('/login')()
+const IndexLazyImport = createFileRoute('/')()
 const LayoutLeaderboardLazyImport = createFileRoute('/_layout/leaderboard')()
 const LayoutDashboardLazyImport = createFileRoute('/_layout/dashboard')()
 const LayoutAccountLazyImport = createFileRoute('/_layout/account')()
@@ -41,6 +42,12 @@ const LayoutRoute = LayoutImport.update({
   id: '/_layout',
   getParentRoute: () => rootRoute,
 } as any)
+
+const IndexLazyRoute = IndexLazyImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
 const LayoutLeaderboardLazyRoute = LayoutLeaderboardLazyImport.update({
   id: '/leaderboard',
@@ -70,6 +77,13 @@ const LayoutAccountLazyRoute = LayoutAccountLazyImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/_layout': {
       id: '/_layout'
       path: ''
@@ -133,6 +147,7 @@ const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexLazyRoute
   '': typeof LayoutRouteWithChildren
   '/login': typeof LoginLazyRoute
   '/register': typeof RegisterLazyRoute
@@ -142,6 +157,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '/': typeof IndexLazyRoute
   '': typeof LayoutRouteWithChildren
   '/login': typeof LoginLazyRoute
   '/register': typeof RegisterLazyRoute
@@ -152,6 +168,7 @@ export interface FileRoutesByTo {
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginLazyRoute
   '/register': typeof RegisterLazyRoute
@@ -163,6 +180,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | ''
     | '/login'
     | '/register'
@@ -170,9 +188,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/leaderboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/login' | '/register' | '/account' | '/dashboard' | '/leaderboard'
+  to:
+    | '/'
+    | ''
+    | '/login'
+    | '/register'
+    | '/account'
+    | '/dashboard'
+    | '/leaderboard'
   id:
     | '__root__'
+    | '/'
     | '/_layout'
     | '/login'
     | '/register'
@@ -183,12 +209,14 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
+  IndexLazyRoute: typeof IndexLazyRoute
   LayoutRoute: typeof LayoutRouteWithChildren
   LoginLazyRoute: typeof LoginLazyRoute
   RegisterLazyRoute: typeof RegisterLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
   LayoutRoute: LayoutRouteWithChildren,
   LoginLazyRoute: LoginLazyRoute,
   RegisterLazyRoute: RegisterLazyRoute,
@@ -204,10 +232,14 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/",
         "/_layout",
         "/login",
         "/register"
       ]
+    },
+    "/": {
+      "filePath": "index.lazy.tsx"
     },
     "/_layout": {
       "filePath": "_layout.tsx",

@@ -19,10 +19,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useForm } from "react-hook-form";
+
 import { z } from "zod";
 
 import { loginSchema } from "@/lib/schemas";
+import { axiosClient } from "@/lib/axios";
 
 export const Route = createLazyFileRoute("/login")({
   component: Login,
@@ -38,9 +41,30 @@ function Login() {
     },
   });
 
-  function onSubmit() {
+  if (localStorage.getItem("token") !== null) {
     navigate({
       to: "/dashboard",
+    });
+    return null;
+  }
+
+  async function onSubmit(data: z.infer<typeof loginSchema>) {
+    const { data: res } = await axiosClient.post(
+      "/01_autentificazione.php",
+      data
+    );
+
+    if (res.token) {
+      localStorage.setItem("token", res.token);
+      navigate({
+        to: "/dashboard",
+      });
+      return;
+    }
+
+    form.setError("username", {
+      type: "validate",
+      message: "Username o password errati",
     });
   }
 

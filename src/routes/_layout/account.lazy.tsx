@@ -9,17 +9,20 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
+import { axiosClient } from "@/lib/axios";
 
 export const Route = createLazyFileRoute("/_layout/account")({
   component: Account,
 });
 
-const userData = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-};
-
 function Account() {
+  const userQuery = useQuery({
+    queryKey: ["user"],
+    queryFn: async () =>
+      axiosClient.get("/06_info.php").then((res) => res.data),
+  });
+
   return (
     <div className="p-3 w-full">
       <Card className="w-full h-fit">
@@ -30,13 +33,21 @@ function Account() {
         <CardContent>
           <div className="flex flex-col gap-3">
             <div>
-              <Label htmlFor="name">Nome:</Label>
-              <Input placeholder={userData.name} className="mt-2" disabled />
+              <Label htmlFor="name">Username:</Label>
+              <Input
+                placeholder={userQuery.data?.username}
+                className="mt-2"
+                disabled
+              />
             </div>
 
             <div>
               <Label htmlFor="email">Email:</Label>
-              <Input placeholder={userData.email} className="mt-2" disabled />
+              <Input
+                placeholder={userQuery.data?.email}
+                className="mt-2"
+                disabled
+              />
             </div>
           </div>
         </CardContent>
