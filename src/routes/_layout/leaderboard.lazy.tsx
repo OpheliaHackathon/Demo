@@ -1,5 +1,5 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { createLazyFileRoute } from "@tanstack/react-router";
 
 import {
   Card,
@@ -41,7 +41,7 @@ function Leaderboard() {
         <CardContent>
           <ul className="flex flex-col gap-2">
             {leaderboardQuery.data?.classifica
-              .sort((a, b) => b.score - a.score)
+              .sort((a, b) => a.score - b.score)
               .slice(0, 10)
               .map((player, index) => {
                 const medal = ["🏆", "🥈", "🥉"][index] || `${index + 1}.`;
