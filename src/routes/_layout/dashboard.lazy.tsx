@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -15,7 +17,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,8 +30,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { axiosClient } from "@/lib/axios";
-import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const days = [
   "Lunedì",
@@ -59,7 +58,10 @@ export const Route = createLazyFileRoute("/_layout/dashboard")({
 });
 
 function Dashboard() {
+  const search = useMemo(() => new URLSearchParams(window.location.search), []);
   const [mode, setMode] = useState(1);
+  const [isTokenDialogOpen, setIsTokenDialogOpen] = useState(false);
+
   const dashboardQuery = useQuery({
     queryKey: ["dashboard", mode],
     queryFn: async () =>
@@ -68,10 +70,17 @@ function Dashboard() {
         .then((res) => res.data),
   });
 
+  useEffect(() => {
+    if (search.has("showToken")) {
+      setIsTokenDialogOpen(true);
+      search.delete("showToken");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [search]);
+
   return (
     <div className="p-3 w-full flex flex-col gap-3">
-      <Dialog>
-        <DialogTrigger>Open</DialogTrigger>
+      <Dialog open={isTokenDialogOpen} onOpenChange={setIsTokenDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Visualizza il tuo token</DialogTitle>

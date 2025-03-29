@@ -33,6 +33,7 @@ export const Route = createLazyFileRoute("/login")({
 
 function Login() {
   const navigate = Route.useNavigate();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -56,9 +57,7 @@ function Login() {
 
     if (res.token) {
       localStorage.setItem("token", res.token);
-      navigate({
-        to: "/dashboard",
-      });
+      location.href = "/dashboard";
       return;
     }
 

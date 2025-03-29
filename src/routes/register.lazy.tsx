@@ -31,6 +31,7 @@ export const Route = createLazyFileRoute("/register")({
 
 function Register() {
   const navigate = Route.useNavigate();
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -71,9 +72,7 @@ function Register() {
 
         if (res2.token) {
           localStorage.setItem("token", res2.token);
-          navigate({
-            to: "/dashboard",
-          });
+          location.href = "/dashboard";
           return;
         }
 
