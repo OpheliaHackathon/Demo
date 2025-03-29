@@ -24,7 +24,9 @@ function Extension() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button>Scarica</Button>
+          <Button asChild>
+            <a href="https://hackathon.lorenzoc.dev/chrome.crx">Scarica</a>
+          </Button>
         </CardContent>
       </Card>
     </div>
