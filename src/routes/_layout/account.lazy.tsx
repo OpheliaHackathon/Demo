@@ -11,8 +11,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { axiosClient } from "@/lib/axios";
-
 export const Route = createLazyFileRoute("/_layout/account")({
   component: Account,
 });
@@ -20,8 +18,10 @@ export const Route = createLazyFileRoute("/_layout/account")({
 function Account() {
   const userQuery = useQuery({
     queryKey: ["user"],
-    queryFn: async () =>
-      axiosClient.get("/06_info.php").then((res) => res.data),
+    queryFn: () => ({
+      username: "Demo",
+      email: "demo@lorenzoc.dev",
+    }),
   });
 
   return (

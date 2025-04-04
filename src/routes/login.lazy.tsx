@@ -25,7 +25,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { loginSchema } from "@/lib/schemas";
-import { axiosClient } from "@/lib/axios";
 
 export const Route = createLazyFileRoute("/login")({
   component: Login,
@@ -37,8 +36,8 @@ function Login() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: "Demo",
+      password: "1234AAbb@",
     },
   });
 
@@ -50,18 +49,13 @@ function Login() {
   }
 
   async function onSubmit(data: z.infer<typeof loginSchema>) {
-    const { data: res } = await axiosClient.post(
-      "/01_autentificazione.php",
-      data
-    );
-
-    if (res.token) {
-      localStorage.setItem("token", res.token);
-      location.href = "/dashboard";
+    if (data.username !== "Demo" || data.password !== "1234AAbb@") {
+      alert("Username o password errati");
       return;
     }
 
-    alert(res.message);
+    localStorage.setItem("token", "Demo");
+    location.href = "/dashboard";
   }
 
   return (

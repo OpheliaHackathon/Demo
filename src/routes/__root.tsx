@@ -1,3 +1,4 @@
+import { DemoBar } from "@/components/parts/demo-bar";
 import { Capacitor } from "@capacitor/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
@@ -19,6 +20,8 @@ function Root() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <DemoBar />
+
       <div className="flex h-screen">
         <Outlet />
       </div>

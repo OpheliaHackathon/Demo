@@ -13,7 +13,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { axiosClient } from "@/lib/axios";
 import { Link, useNavigate } from "@tanstack/react-router";
 
 import { LogOutIcon, MoreVerticalIcon, UserCircleIcon } from "lucide-react";
@@ -70,11 +69,9 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                axiosClient.post("/04_logout.php").then(() => {
-                  localStorage.removeItem("token");
-                  navigate({
-                    to: "/login",
-                  });
+                localStorage.removeItem("token");
+                navigate({
+                  to: "/login",
                 });
               }}
             >

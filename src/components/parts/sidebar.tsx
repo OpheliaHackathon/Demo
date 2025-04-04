@@ -12,8 +12,6 @@ import {
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
-import { useQuery } from "@tanstack/react-query";
-import { axiosClient } from "@/lib/axios";
 
 const data = {
   navMain: [
@@ -33,12 +31,6 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const userQuery = useQuery({
-    queryKey: ["user"],
-    queryFn: async () =>
-      axiosClient.get("/06_info.php").then((res) => res.data),
-  });
-
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -60,7 +52,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={userQuery.data} />
+        <NavUser
+          user={{
+            username: "Demo",
+            email: "demo@lorenzoc.dev",
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );

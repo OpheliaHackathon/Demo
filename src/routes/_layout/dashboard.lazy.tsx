@@ -29,8 +29,6 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-import { axiosClient } from "@/lib/axios";
-
 import Suggestion from "@/components/suggestion";
 
 const days = [
@@ -66,10 +64,10 @@ function Dashboard() {
 
   const dashboardQuery = useQuery({
     queryKey: ["dashboard", mode],
-    queryFn: async () =>
-      axiosClient
-        .get<DashboardData>(`/02_dashboard.php?mode=${mode}`)
-        .then((res) => res.data),
+    queryFn: () => ({
+      daily: 400,
+      week: [400, 300, 200, 100, 50, 0, 0],
+    }),
   });
 
   useEffect(() => {

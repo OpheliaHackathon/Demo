@@ -9,8 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { axiosClient } from "@/lib/axios";
-
 import Suggestion from "@/components/suggestion";
 
 export type LeaderboardData = {
@@ -25,10 +23,14 @@ export const Route = createLazyFileRoute("/_layout/leaderboard")({
 function Leaderboard() {
   const leaderboardQuery = useQuery({
     queryKey: ["leaderboard"],
-    queryFn: async () =>
-      axiosClient
-        .get<{ classifica: LeaderboardData[] }>("/03_classifica.php")
-        .then((res) => res.data),
+    queryFn: async () => ({
+      classifica: [
+        { username: "Demo", score: 100 },
+        { username: "Lorenzo", score: 200 },
+        { username: "Anna", score: 250 },
+        { username: "Mario", score: 300 },
+      ] satisfies LeaderboardData[],
+    }),
   });
 
   return (
